@@ -31,6 +31,24 @@ func convertIssue(issue *db.Issue) *model.Issue {
 	}
 }
 
+func (i *issueService) GetIssueByID(ctx context.Context, id string) (*model.Issue, error) {
+	issue, err := db.FindIssue(
+		ctx, i.exec, id,
+		db.IssueColumns.ID,
+		db.IssueColumns.URL,
+		db.IssueColumns.Title,
+		db.IssueColumns.Closed,
+		db.IssueColumns.Number,
+		db.IssueColumns.Author,
+		db.IssueColumns.Repository,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return convertIssue(issue), nil
+}
+
 func (i *issueService) GetIssueByRepoAndNumber(ctx context.Context, repID string, number int) (*model.Issue, error) {
 	issue, err := db.Issues(
 		qm.Select(

@@ -22,6 +22,18 @@ func convertRepository(rep *db.Repository) *model.Repository {
 	}
 }
 
+func (r *repositoryService) GetRepositoryByID(ctx context.Context, id string) (*model.Repository, error) {
+	rep, err := db.FindRepository(
+		ctx, r.exec, id,
+		db.RepositoryColumns.ID, db.RepositoryColumns.Name, db.RepositoryColumns.Owner, db.RepositoryColumns.CreatedAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return convertRepository(rep), nil
+}
+
 func (r *repositoryService) GetRepositoryByFullName(ctx context.Context, owner, name string) (*model.Repository, error) {
 	rep, err := db.Repositories(
 		qm.Select(
@@ -36,5 +48,6 @@ func (r *repositoryService) GetRepositoryByFullName(ctx context.Context, owner, 
 	if err != nil {
 		return nil, err
 	}
+
 	return convertRepository(rep), nil
 }
