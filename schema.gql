@@ -148,8 +148,7 @@ type ProjectV2ItemEdge {
 type Query {
   repository(name: String!, owner: String!): Repository
 
-  # user(name: String!): User @isAuthenticated
-  user(name: String!): User
+  user(name: String!): User @isAuthenticated
 
   node(id: ID!): Node
 }

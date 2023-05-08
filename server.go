@@ -16,6 +16,7 @@ import (
 	"github.com/Ibuki-Y/go-gql-git/graph"
 	"github.com/Ibuki-Y/go-gql-git/graph/services"
 	"github.com/Ibuki-Y/go-gql-git/internal"
+	"github.com/Ibuki-Y/go-gql-git/middlewares/auth"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/volatiletech/sqlboiler/v4/boil"
 )
@@ -45,6 +46,7 @@ func main() {
 			Loaders: graph.NewLoaders(service),
 		},
 		Complexity: graph.ComplexityConfig(),
+		Directives: graph.Directive,
 	}))
 	srv.Use(extension.FixedComplexityLimit(100))
 
@@ -79,7 +81,7 @@ func main() {
 	boil.DebugMode = true
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", srv)
+	http.Handle("/query", auth.AuthMiddleware(srv))
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
